@@ -1,0 +1,11 @@
+
+documentary_wire.show_community:
+    pattern: /community/
+    defaults: { _controller: UserBundle:Community:show }
+
+documentary_wire.show_activity:
+    pattern: /activity/
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire.show_community
+        permanent: true # this is for 301

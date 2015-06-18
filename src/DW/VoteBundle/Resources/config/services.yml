@@ -1,0 +1,46 @@
+parameters:
+    # services
+    vote_manager.class: DW\VoteBundle\Service\VoteService
+
+    # doctrine repositories
+    vote_repository.class: DW\VoteBundle\Repository\Doctrine\ORM\VoteRepository
+    vote_repository.factory_argument: 'VoteBundle:Vote'
+
+    # cached repositories
+    cached_vote_repository.class: DW\VoteBundle\Repository\Cached\VoteRepository
+
+    # extensions
+    fetch_vote_extension.class: DW\VoteBundle\Extension\FetchVoteExtension
+    top_scoring_users_extension.class: DW\VoteBundle\Extension\TopScoringUsersExtension
+
+services:
+    # doctrine repository
+    documentary_wire.vote_repository:
+        class: %vote_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %vote_repository.factory_argument%
+
+    # cached repository
+    documentary_wire.cached_vote_repository:
+        class: %cached_vote_repository.class%
+        arguments:
+          - @documentary_wire.vote_repository
+          - @documentary_wire.cache_helper
+
+    # extensions
+#    documentary_wire.twig.fetch_vote_extension:
+ #       class: %fetch_vote_extension.class%
+  #      arguments:
+   #       - @documentary_wire.vote_service
+    #      - @documentary_wire.user_helper
+     #   tags:
+      #   - { name: twig.extension }
+
+#    documentary_wire.twig.top_scoring_users_extension:
+#        class: %top_scoring_users_extension.class%
+#        arguments:
+#          - @documentary_wire.vote_service
+#        tags:
+#          - { name: twig.extension }

@@ -1,0 +1,4 @@
+
+documentary_wire_vote_comment:
+    pattern: /ajax/comment/vote
+    defaults: { _controller: DocumentaryWIREBundle:Comment:vote }

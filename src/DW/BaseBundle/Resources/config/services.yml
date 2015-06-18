@@ -1,0 +1,41 @@
+parameters:
+    # services
+    base_service.class: DW\BaseBundle\Manager\BaseManager
+    paginate_manager.class: DW\BaseBundle\Manager\PaginateManager
+
+    # helpers
+    cache_helper.class: DW\BaseBundle\Helper\CacheHelper
+    user_helper.class: DW\BaseBundle\Helper\UserHelper
+    image_helper.class: DW\BaseBundle\Helper\ImageHelper
+
+    # extensions:
+    relative_time_extension.class: DW\BaseBundle\Extension\RelativeTimeExtension
+    hour_minute_extension.class: DW\BaseBundle\Extension\HourMinuteExtension
+    section_extension.class:     DW\BaseBundle\Extension\SectionExtension
+
+services:
+    # services
+    documentary_wire.cache_helper:
+        class: %cache_helper.class%
+        arguments:
+            - @tbbc_cache.simple_cache_manager
+            - @tbbc_cache.key_generator.simple_hash
+            - @jms_serializer.serializer
+
+    # extensions
+    documentary_wire.twig.relative_time_extension:
+        class: %relative_time_extension.class%
+        tags:
+            - { name: twig.extension }
+
+    documentary_wire.twig.hour_minute_extension:
+        class: %hour_minute_extension.class%
+        tags:
+            - { name: twig.extension }
+
+    documentary_wire.twig.section_extension:
+        class: %section_extension.class%
+        arguments:
+          - @documentary_wire.documentary_service
+        tags:
+         - { name: twig.extension }

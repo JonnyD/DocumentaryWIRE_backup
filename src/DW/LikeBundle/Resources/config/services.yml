@@ -1,0 +1,44 @@
+parameters:
+    # services
+    like_service.class: DW\LikeBundle\Service\LikeService
+
+    # doctrine repositories
+    like_repository.class: DW\LikeBundle\Repository\Doctrine\ORM\LikeRepository
+    like_repository.factory_argument: 'LikeBundle:Like'
+
+    # cached repositories
+    cached_like_repository.class: DW\LikeBundle\Repository\Cached\LikeRepository
+
+    # extensions
+    has_liked_extension.class: DW\LikeBundle\Extension\HasLikedExtension
+
+services:
+    # services
+    documentary_wire.like_service:
+        class: %like_service.class%
+        arguments:
+          - @documentary_wire.like_repository
+          - @event_dispatcher
+
+    # doctrine repositories
+    documentary_wire.like_repository:
+        class: %like_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %like_repository.factory_argument%
+
+    # cached repositories
+    documentary_wire.cached_like_repository:
+        class: %cached_like_repository.class%
+        arguments:
+            - @documentary_wire.like_repository
+            - @documentary_wire.cache_helper
+
+    # extensions
+    documentary_wire.twig.has_liked_extension:
+        class: %has_liked_extension.class%
+        arguments:
+          - @documentary_wire.like_service
+        tags:
+         - { name: twig.extension }

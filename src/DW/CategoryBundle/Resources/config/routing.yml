@@ -1,0 +1,19 @@
+
+documentary_wire_list_categories:
+    pattern: /category/
+    defaults: { _controller: CategoryBundle:Category:list }
+
+documentary_wire_show_category:
+    pattern: /category/{slug}/
+    defaults: { _controller: CategoryBundle:Category:show, page: 1 }
+
+documentary_wire_show_category_first:
+    pattern: /category/{slug}/page/1/
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire_show_category
+        permanent: true # this is for 301
+
+documentary_wire_show_category_page:
+    pattern: /category/{slug}/page/{page}/
+    defaults: { _controller: CategoryBundle:Category:show }

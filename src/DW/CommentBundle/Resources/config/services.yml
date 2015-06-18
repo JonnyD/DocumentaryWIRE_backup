@@ -1,0 +1,35 @@
+parameters:
+    # services
+    comment_service.class: DW\CommentBundle\Service\CommentService
+
+    # doctrine repositories
+    comment_repository.class: DW\CommentBundle\Repository\Doctrine\ORM\CommentRepository
+    comment_repository.factory_argument: 'DocumentaryWIREBundle:Comment'
+
+    # cached repositories
+    cached_comment_repository.class: DW\CommentBundle\Repository\Cached\CommentRepository
+
+services:
+    # services
+    documentary_wire.comment_service:
+        class: %comment_service.class%
+        arguments:
+          - @documentary_wire.comment_repository
+          - @event_dispatcher
+
+    # doctrine repositories
+    documentary_wire.comment_repository:
+        class: %comment_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %comment_repository.factory_argument%
+
+    # cached repositories
+    documentary_wire.cached_comment_repository:
+        class: %cached_comment_repository.class%
+        arguments:
+            - @documentary_wire.comment_repository
+            - @documentary_wire.cache_helper
+
+    # extensions

@@ -1,0 +1,91 @@
+parameters:
+    # services
+    user_service.class: DW\UserBundle\Service\UserService
+    role_service.class: DW\UserBundle\Service\RoleService
+
+    # doctrine repositories
+    user_repository.class: DW\UserBundle\Repository\Doctrine\ORM\UserRepository
+    user_repository.factory_argument: 'UserBundle:User'
+
+    role_repository.class: DW\UserBundle\Repository\Doctrine\ORM\RoleRepository
+    role_repository.factory_argument: 'UserBundle:Role'
+
+    # cached repositories
+    cached_user_repository.class: DW\UserBundle\Repository\Cached\UserRepository
+
+    # extensions
+    user_widget_extension.class: DW\UserBundle\Extension\UserWidgetExtension
+    get_gravatar_extension.class: DW\UserBundle\Extension\GravatarExtension
+    get_avatar_extension.class: DW\UserBundle\Extension\AvatarExtension
+
+services:
+    # services
+    documentary_wire.user_service:
+        class: %user_service.class%
+        arguments:
+          - @documentary_wire.user_repository
+          - @event_dispatcher
+
+    documentary_wire.role_service:
+        class: %user_service.class%
+        arguments:
+          - @documentary_wire.user_repository
+          - @event_dispatcher
+
+    # doctrine repositories
+    documentary_wire.user_repository:
+        class: %user_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %user_repository.factory_argument%
+
+    documentary_wire.role_repository:
+        class: %role_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %role_repository.factory_argument%
+
+    # cached repositories
+    documentary_wire.cached_user_repository:
+        class: %cached_user_repository.class%
+        arguments:
+            - @documentary_wire.user_repository
+            - @documentary_wire.cache_helper
+
+#    documentary_wire.oauth_user_provider:
+#        class: DW\UserBundle\Provider\OAuthUserProvider
+#        arguments:
+#            - @documentary_wire.user_service
+#            - @documentary_wire.role_service
+#            - @documentary_wire.comment_service
+#            - @liip_imagine.data.manager
+#            - @liip_imagine.filter.manager
+#            - @documentary_wire.activity_service
+#            - @security.encoder_factory
+#            - @documentary_wire.cache_helper
+
+    # extensions
+    documentary_wire.twig.user_widget_extension:
+        class: %user_widget_extension.class%
+        arguments:
+          - @documentary_wire.user_service
+          - @Session
+        tags:
+         - { name: twig.extension }
+
+    documentary_wire.twig.get_gravatar_extension:
+        class: %get_gravatar_extension.class%
+        arguments:
+          - @documentary_wire.user_service
+        tags:
+         - { name: twig.extension }
+
+    documentary_wire.twig.get_avatar_extension:
+        class: %get_avatar_extension.class%
+        arguments:
+            - @documentary_wire.user_service
+            - @liip_imagine.cache.manager
+        tags:
+         - { name: twig.extension }

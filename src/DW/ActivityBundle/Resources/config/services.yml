@@ -1,0 +1,44 @@
+parameters:
+    # services
+    activity_service.class: DW\ActivityBundle\Service\ActivityService
+
+    # doctrine repositories
+    activity_repository.class: DW\ActivityBundle\Repository\Doctrine\ORM\ActivityRepository
+    activity_repository.factory_argument: 'ActivityBundle:Activity'
+
+    # cached repositories
+    cached_activity_repository.class: DW\ActivityBundle\Repository\Cached\ActivityRepository
+
+    # extensions
+    activity_widget_extension.class: DW\ActivityBundle\Extension\ActivityWidgetExtension
+
+services:
+    # services
+    documentary_wire.activity_service:
+        class: %activity_service.class%
+        arguments:
+          - @documentary_wire.activity_repository
+          - @event_dispatcher
+
+    # doctrine repositories
+    documentary_wire.activity_repository:
+        class: %activity_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %activity_repository.factory_argument%
+
+    # cached repositories
+    documentary_wire.cached_activity_repository:
+        class: %cached_activity_repository.class%
+        arguments:
+            - @documentary_wire.activity_repository
+            - @documentary_wire.cache_helper
+
+    # extensions
+    documentary_wire.twig.activity_widget_extension:
+        class: %activity_widget_extension.class%
+        arguments:
+          - @documentary_wire.activity_service
+        tags:
+         - { name: twig.extension }

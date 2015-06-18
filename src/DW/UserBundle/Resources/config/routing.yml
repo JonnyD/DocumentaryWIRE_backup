@@ -1,0 +1,95 @@
+
+documentary_wire.list_users:
+    pattern: /admin/users/
+    defaults: { _controller: UserBundle:User:listUsers }
+
+documentary_wire.forgot_password:
+    pattern: /forgot-password/
+    defaults: { _controller: UserBundle:User:forgotPassword }
+
+documentary_wire.activate:
+    pattern: /activate/
+    defaults: { _controller: UserBundle:User:activateAccount }
+
+documentary_wire.send_activation_email:
+    pattern: /send-activation-email/
+    defaults: { _controller: UserBundle:User:sendActivationEmail }
+
+documentary_wire.activation_required:
+    pattern: /activation-required
+    defaults:
+        _controller: FrameworkBundle:Template:template
+        template: 'UserBundle:User:activationRequired.html.twig'
+
+documentary_wire.change_password:
+    pattern: /user/change-password/
+    defaults: { _controller: UserBundle:User:changePassword }
+
+documentary_wire.change_username:
+    pattern: /user/change-username/
+    defaults: { _controller: UserBundle:User:changeUsername }
+
+documentary_wire.change_email:
+    pattern: /user/change-email/
+    defaults: { _controller: UserBundle:User:changeEmail }
+
+documentary_wire.reset_password:
+    pattern: /reset-password/
+    defaults: { _controller: UserBundle:User:resetPassword }
+
+documentary_wire.upload_avatar:
+    pattern: /user/upload-avatar/
+    defaults: { _controller: UserBundle:User:uploadAvatar }
+
+documentary_wire.edit_profile:
+    pattern: /user/edit-profile/
+    defaults: { _controller: UserBundle:User:editProfile }
+
+documentary_wire_show_user:
+    pattern: /user/{username}/
+    defaults: { _controller: UserBundle:User:showActivity }
+
+documentary_wire_show_member:
+    pattern: /members/{username}/
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire_show_user
+        permanent: true # this is for 301
+
+documentary_wire_show_author:
+    pattern: /author/{username}/
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire_show_user
+        permanent: true # this is for 301
+
+documentary_wire_show_member_activity:
+    pattern: /members/{username}/activity/{id}
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire_show_user
+        permanent: true # this is for 301
+
+documentary_wire_show_user_favourites:
+    pattern: /user/{username}/favorites
+    defaults: { _controller: UserBundle:User:showLiked }
+
+documentary_wire_show_user_followers:
+    pattern: /user/{username}/followers
+    defaults: { _controller: UserBundle:User:showFollowers }
+
+documentary_wire_show_user_following:
+    pattern: /user/{username}/following
+    defaults: { _controller: UserBundle:User:showFollowing }
+
+
+documentary_wire.register:
+    pattern: /register/
+    defaults: { _controller: UserBundle:Security:Register }
+
+documentary_wire.wp_register:
+    pattern: /register-2/
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire.register
+        permanent: true # this is for 301

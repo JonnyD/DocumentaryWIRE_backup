@@ -1,0 +1,51 @@
+parameters:
+    # services
+    category_service.class: DW\CategoryBundle\Service\CategoryService
+
+    # doctrine repositories
+    category_repository.class: DW\CategoryBundle\Repository\Doctrine\ORM\CategoryRepository
+    category_repository.factory_argument: 'DocumentaryWIREBundle:Category'
+
+    # cached repositories
+    cached_category_repository.class: DW\CategoryBundle\Repository\Cached\CategoryRepository
+
+    # extensions
+    categories_widget_extension.class: DW\CategoryBundle\Extension\CategoriesWidgetExtension
+    tags_widget_extension.class: DW\CategoryBundle\Extension\TagsWidgetExtension
+
+services:
+    # services
+    documentary_wire.category_service:
+        class: %category_service.class%
+        arguments:
+          - @documentary_wire.category_repository
+
+    # doctrine repositories
+    documentary_wire.category_repository:
+        class: %category_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %category_repository.factory_argument%
+
+    # cached repositories
+    documentary_wire.cached_category_repository:
+        class: %cached_category_repository.class%
+        arguments:
+            - @documentary_wire.category_repository
+            - @documentary_wire.cache_helper
+
+    # extensions
+    documentary_wire.twig.categories_widget_extension:
+        class: %categories_widget_extension.class%
+        arguments:
+          - @documentary_wire.category_service
+        tags:
+         - { name: twig.extension }
+
+    documentary_wire.twig.tags_widget_extension:
+        class: %tags_widget_extension.class%
+        arguments:
+          - @documentary_wire.tag_service
+        tags:
+         - { name: twig.extension }

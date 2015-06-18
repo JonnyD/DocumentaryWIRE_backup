@@ -1,0 +1,22 @@
+parameters:
+    # services
+    follow_manager.class: DW\DWBundle\Manager\FollowManager
+
+    # doctrine repositories
+    follow_repository.class: DW\DWBundle\Repository\Doctrine\ORM\FollowRepository
+    follow_repository.factory_argument: 'DocumentaryWIREBundle:Follow'
+
+services:
+    # services
+    documentary_wire.follow_manager:
+        class: %follow_manager.class%
+        arguments:
+          - @documentary_wire.follow_repository
+
+    # doctrine repositories
+    documentary_wire.follow_repository:
+        class: %follow_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %follow_repository.factory_argument%

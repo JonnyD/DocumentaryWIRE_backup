@@ -1,0 +1,57 @@
+
+documentary_wire_list_documentaries:
+    pattern: /documentary/
+    defaults: { _controller: DocumentaryBundle:Documentary:list }
+
+documentary_wire.add_documentary:
+    pattern: /documentary/add/
+    defaults: { _controller: DocumentaryBundle:Documentary:add }
+
+documentary_wire_add_link:
+    pattern: /link/add/
+    defaults: { _controller: DocumentaryBundle:Link:add }
+
+documentary_wire.show_year:
+    pattern: /released/{year}/
+    defaults: { _controller: DocumentaryBundle:Documentary:showYear }
+
+documentary_wire.show_duration:
+    pattern: /length/{length}/
+    defaults: { _controller: DocumentaryBundle:Documentary:showDuration }
+
+
+documentary_wire_show_documentary:
+    pattern: /{slug}/
+    defaults: { _controller: DocumentaryBundle:Documentary:show, page: 1 }
+
+documentary_wire.show_documentary_wo_slash:
+    pattern: /{slug}
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire_show_documentary
+        permanent: true # this is for 301
+
+documentary_wire.show_documentary_trackback:
+    pattern: /{slug}/trackback
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire_show_documentary
+        permanent: true # this is for 301
+
+documentary_wire_show_documentary_first:
+    pattern: /{slug}/comment-page-1/
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire_show_documentary
+        permanent: true # this is for 301
+
+documentary_wire_show_documentary_page:
+    pattern: /{slug}/comment-page-{page}/
+    defaults: { _controller: DocumentaryBundle:Documentary:show, page: page }
+
+documentary_wire_show_documentary_feed:
+    pattern: /{slug}/feed/
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        route: documentary_wire_show_documentary
+        permanent: true # this is for 301

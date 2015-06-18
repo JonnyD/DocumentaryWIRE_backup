@@ -1,0 +1,82 @@
+parameters:
+    # services
+    documentary_service.class: DW\DocumentaryBundle\Service\DocumentaryService
+
+    # doctrine repositories
+    documentary_repository.class: DW\DocumentaryBundle\Repository\Doctrine\ORM\DocumentaryRepository
+    documentary_repository.factory_argument: 'DocumentaryBundle:Documentary'
+
+    # cached repositories
+    cached_documentary_repository.class: DW\DocumentaryBundle\Repository\Cached\DocumentaryRepository
+
+    # extensions
+    fetch_documentary_extension.class: DW\DocumentaryBundle\Extension\FetchDocumentaryExtension
+    featured_documentaries_extension.class: DW\DocumentaryBundle\Extension\FeaturedDocumentariesExtension
+    year_widget_extension.class: DW\DocumentaryBundle\Extension\YearWidgetExtension
+    duration_widget_extension.class: DW\DocumentaryBundle\Extension\DurationWidgetExtension
+    related_documentaries_extension.class: DW\DocumentaryBundle\Extension\RelatedDocumentariesExtension
+    views_extension.class: DW\DocumentaryBundle\Extension\ViewsExtension
+
+services:
+    # services
+    documentary_wire.documentary_service:
+        class: %documentary_service.class%
+        arguments:
+          - @documentary_wire.documentary_repository
+          - @event_dispatcher
+
+    # doctrine repositories
+    documentary_wire.documentary_repository:
+        class: %documentary_repository.class%
+        factory_service: doctrine.orm.entity_manager
+        factory_method: getRepository
+        arguments:
+          - %documentary_repository.factory_argument%
+
+    # cached repositories
+    documentary_wire.cached_documentary_repository:
+        class: %cached_documentary_repository.class%
+        arguments:
+            - @documentary_wire.documentary_repository
+            - @documentary_wire.cache_helper
+
+    # extensions
+    documentary_wire.twig.fetch_documentary_extension:
+        class: %fetch_documentary_extension.class%
+        arguments:
+          - @documentary_wire.documentary_service
+        tags:
+         - { name: twig.extension }
+
+    documentary_wire.twig.featured_documentaries_extension:
+        class: %featured_documentaries_extension.class%
+        arguments:
+          - @documentary_wire.documentary_service
+        tags:
+         - { name: twig.extension }
+
+    documentary_wire.twig.year_widget_extension:
+        class: %year_widget_extension.class%
+        arguments:
+          - @documentary_wire.documentary_service
+        tags:
+         - { name: twig.extension }
+
+    documentary_wire.twig.duration_widget_extension:
+        class: %duration_widget_extension.class%
+        arguments:
+          - @documentary_wire.documentary_service
+        tags:
+         - { name: twig.extension }
+
+    documentary_wire.twig.related_documentaries_extension:
+        class: %related_documentaries_extension.class%
+        arguments:
+          - @documentary_wire.documentary_service
+        tags:
+         - { name: twig.extension }
+
+    documentary_wire.twig.views_extension:
+        class: %views_extension.class%
+        tags:
+            - { name: twig.extension }
